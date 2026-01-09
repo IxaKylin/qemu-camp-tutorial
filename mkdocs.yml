@@ -88,12 +88,12 @@ nav:
       - 1. 导学阶段: tutorial/2026/ch0/index.md
       - 2. 基础阶段:
         - 本章导览: tutorial/2026/ch1/index.md
-        - a. 虚拟技术发展历史: tutorial/2026/ch1/vm-history.md
-        - b. QEMU 启动参数分析: tutorial/2026/ch1/qemu-startup-param.md
-        - c. QEMU 启动流程分析: tutorial/2026/ch1/qemu-init.md
-        - d. QEMU 面向对象建模: tutorial/2026/ch1/qemu-qom.md
-        - e. QEMU 地址空间抽象: tutorial/2026/ch1/qemu-mr.md
-        - f. QEMU 常用调试方法: tutorial/2026/ch1/qemu-debug.md
+        - a. 虚拟技术历史: tutorial/2026/ch1/vm-history.md
+        - b. 启动参数分析: tutorial/2026/ch1/qemu-startup-param.md
+        - c. 启动流程分析: tutorial/2026/ch1/qemu-init.md
+        - d. 面向对象建模: tutorial/2026/ch1/qemu-qom.md
+        - e. 地址空间抽象: tutorial/2026/ch1/qemu-mr.md
+        - f. 常用调试方法: tutorial/2026/ch1/qemu-debug.md
     - QEMU 训练营 2025:
       - 训练营介绍: tutorial/2025/index.md
       - 1. 导学阶段: tutorial/2025/ch0/index.md
