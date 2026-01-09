@@ -49,4 +49,4 @@
 
 读者只需要修改`program`在读者本机的确切地址即可，至于`name`则可以随自身喜好进行设置。然后，就可以直接开始调试 (`stopAtEntry=true`会使得调试器停顿在入口处)。
 
-![Vscode Debug Qemu Source Code](../../image/debug-qemu.png)
+![Vscode Debug Qemu Source Code](../../../../image/debug-qemu.png)
