@@ -10,13 +10,13 @@ QEMU 是一个成熟的虚拟化软件和模拟器，虽然 QEMU 已经发展了
 
 从软件的角度来讲，虚拟化的诞生，正是从软件接口的设计演化而来的，所以早期的虚拟化方案，一般是软件实现，后面为了性能考虑，过渡到硬件实现。这也是软件功能影响硬件设计的典范之一 (下图是 System/360 的首席架构师 Gene Amdahl)。
 
-![System/360 的首席架构师 Gene Amdahl](../../../../image/gene-amdahl.png){ style="width: 100%; height: auto;" }
+![System/360 的首席架构师 Gene Amdahl](../../../image/gene-amdahl.png){ style="width: 100%; height: auto;" }
 
 ## 发展历史
 
 而以其中的 System/360 为出发点，我们梳理出三条极具特色的虚拟机技术发展脉络，可总结为：高效利用硬件资源、模拟与跨平台的需求、微架构仿真。
 
-![虚拟机发展历史](../../../../image/vm-history.png){ style="width: 100%; height: auto;" }
+![虚拟机发展历史](../../../image/vm-history.png){ style="width: 100%; height: auto;" }
 
 下面对三个发展方向进行介绍。
 
