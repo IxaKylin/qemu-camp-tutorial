@@ -38,9 +38,9 @@ QEMU 是一款功能强大的开源虚拟化和仿真软件，支持多种处理
 |       parameter       |          example          |     Description    |
 |          ---          |           ----            |        ----        |
 |  `-bios`              | `-bios opensbi.bin`       | 加载自定义 BIOS 或 OpenSBI 固件或裸机程序 |
-|  `-kernel`            | `-kernel vmlinux`         | 加载 Linux 内核镜像（通常是 vmlinux 或 Image） |
+|  `-kernel`            | `-kernel Image`           | 直接加载 Linux 内核镜像（direct Linux boot；不同架构常见镜像名不同，例如 x86 常见 `bzImage`，ARM/RISC-V 常见 `Image`） |
 |  `-initrd`            | `-initrd initrd.img`      | 指定初始化内存盘，加载 initramfs 或 initrd 文件系统 |
-|  `-append`            | `-append "console=ttyS0"` | 传递给内核的命令行参数，需主板支持 fw_cfg |
+|  `-append`            | `-append "console=ttyS0"` | 传递给内核的命令行参数（direct Linux boot 场景，通常与 `-kernel` 配合使用） |
 |  `-dtb`               | `-dtb kernel.dtb`         | 传递给内核的 DTB 镜像文件 |
 
 
@@ -61,11 +61,11 @@ QEMU 是一款功能强大的开源虚拟化和仿真软件，支持多种处理
 
 |   parameter  |     example     |     Description    |
 |      ---     |      ----       |        ----        |
-| `-nographic` |        -        | 禁用图形环境，所有输出重定向到终端，可 `CTRL+A,C` 唤起控制台 |
-| `-serial`    | `-serial stdio` | 指定串口输出位置，标准输出是 `stdio`，输出到文件 `file:run.log` |
-| `-monitor`   | `-monitor none` | QEMU 内部监控接口，用于运行时管理虚拟机，参数 `none` 合并到串口 |
-| `-s`         |        -        | 启用 GDB 服务器（默认端口 1234） |
-| `-S`         |        -        | 启动时冻结 CPU |
+| `-nographic` |        -        | 禁用图形输出，并将串口 I/O（以及默认 monitor）重定向到当前终端；默认转义键为 `Ctrl+a`，可用 `Ctrl+a c` 在串口/monitor 间切换，`Ctrl+a x` 退出，`Ctrl+a h` 查看帮助 |
+| `-serial`    | `-serial stdio` | 将 guest 串口重定向到宿主字符设备（常见：`stdio`、`mon:stdio`、`file:run.log` 等） |
+| `-monitor`   | `-monitor none` | 重定向或禁用 HMP monitor；例如 `-monitor stdio` 将 monitor 放到当前终端，`-monitor none` 禁用默认 monitor |
+| `-s`         |        -        | 启用 gdbstub（等价于 `-gdb tcp::1234`） |
+| `-S`         |        -        | 启动时冻结 CPU，等待 gdb/monitor 继续执行 |
 
 ---
 
@@ -125,13 +125,13 @@ cmd="qemu-system-riscv64 \
 
 `-device virtio-net-device,netdev=usernet`：添加一块 VirtIO 网卡，并绑定到 usernet 这个网络后端。
 
-`-device virtio-vga`：添加 VirtIO 显示设备（在 -nographic 下不会弹窗，但仍可能影响固件/显示相关输出路径）。
+`-device virtio-vga`：添加 VirtIO 显示设备。使用 `-nographic` 时不会打开图形窗口，但该设备仍会被固件/操作系统枚举。
 
 `-device qemu-xhci`：添加 xHCI 控制器。
 
 `-usb -device usb-kbd`：开启 USB 支持，添加 USB 键盘设备。
 
-`-device usb-tablet`：添加 USB 平板指针设备（绝对坐标，图形界面下鼠标体验更好；-nographic 下通常用处不大）。
+`-device usb-tablet`：添加 USB 平板指针设备（绝对坐标，常用于图形界面以改善指针定位；纯串口交互场景一般不需要）。
 
 现在我们解压镜像，启动 OpenEuler:
 
@@ -142,35 +142,29 @@ chmod +x start_vm.sh
 ./start_vm.sh
 ```
 
-!!! tip "如何查阅更多 QEMU 启动参数"
+## 查阅 QEMU 启动参数
 
-    这里提供两个方法。
+!!! tip "查阅方法"
 
-    方法一：直接通过 `qemu-system-* --help` 可以查询到所有支持的命令。效果如下:
+    这里提供几个方法。
+
+    方法一：通过 `--help` / `help` 子命令查询（输出会随 QEMU 版本与架构变化）：
 
     ```bash
-    $qemu-system-riscv64 --help
-    QEMU emulator version 10.2.50 (v10.2.0-325-g582f8d593c)
-    Copyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers
-    usage: qemu-system-riscv64 [options] [disk_image]
-
-    'disk_image' is a raw hard disk image for IDE hard disk 0
-
-    Standard options:
-    -h or -help     display this help and exit
-    -version        display version information and exit
-    -machine [type=]name[,prop[=value][,...]]
-                    selects emulated machine ('-machine help' for list)
-                    property accel=accel1[:accel2[:...]] selects accelerator
-                    supported accelerators are kvm, xen, hvf, nvmm, whpx, mshv or tcg (default: tcg)
-                    vmport=on|off|auto controls emulation of vmport (default: auto)
-                    ...
-    -M              as -machine
-    -cpu cpu        select CPU ('-cpu help' for list)
-    ...
+    qemu-system-riscv64 --help
+    qemu-system-riscv64 -machine help
+    qemu-system-riscv64 -cpu help
+    qemu-system-riscv64 -device help
+    qemu-system-riscv64 -device virtio-blk-device,help
     ```
 
     方法二：通过训练营提供的 QEMU 知识库，检索需要的启动参数 [ima 知识库: QEMU | 格维开源社区][qemu-ima-link]
 
-    [qemu-ima-link]: https://ima.qq.com/wiki/?shareId=70cb647d4024402dccc94b947c210de2e5c65c68559c166da7ee1a3d9a714e5e
+    方法三：官方资料（用于校对参数语义）：
 
+    - Direct Linux Boot（`-kernel`/`-append`/`-initrd`，以及 `-nographic` 基本行为）：<https://www.qemu.org/docs/master/system/linuxboot.html>
+    - GDB usage（`-s`/`-S`/`-gdb` 与默认端口）：<https://www.qemu.org/docs/master/system/gdb.html>
+    - Keys in the character backend multiplexer（`Ctrl-a c/x/h` 等）：<https://www.qemu.org/docs/master/system/mux-chardev.html>
+    - QEMU User Documentation（`-monitor none` 用于禁用默认 monitor）：<https://www.qemu.org/docs/master/system/qemu-manpage.html>
+
+[qemu-ima-link]: https://ima.qq.com/wiki/?shareId=70cb647d4024402dccc94b947c210de2e5c65c68559c166da7ee1a3d9a714e5e
