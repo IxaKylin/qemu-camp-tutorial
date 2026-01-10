@@ -94,6 +94,8 @@ nav:
         - d. 面向对象建模: tutorial/2026/ch1/qemu-qom.md
         - e. 地址空间抽象: tutorial/2026/ch1/qemu-mr.md
         - f. 常用调试方法: tutorial/2026/ch1/qemu-debug.md
+      - 3. 专业阶段:
+        - 本章导览: tutorial/2026/ch2/index.md
     - QEMU 训练营 2025:
       - 训练营介绍: tutorial/2025/index.md
       - 1. 导学阶段: tutorial/2025/ch0/index.md
