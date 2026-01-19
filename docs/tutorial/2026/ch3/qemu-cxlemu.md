@@ -1,4 +1,4 @@
-# 建模 AI 加速硬件: 基于 CXLMemSim 和 QEMU 的 GPU 可观测系统构建
+# 建模 AI 加速硬件：基于 CXLMemSim 和 QEMU 的 GPU 可观测系统构建
 
 ## 项目简介
 [待补充]
