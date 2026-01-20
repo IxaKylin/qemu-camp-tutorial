@@ -176,7 +176,9 @@ nav:
       - 专业实验:
         - 实验介绍: exercise/2026/stage1/index.md
         - a. 模拟 G233 主板: exercise/2026/stage1/g233-board.md
-  - 博客: blogs/index.md
+  - 博客:
+    - 介绍页: blogs/index.md
+    - QEMU 训练营 2025 专业阶段实验解析: blogs/qemu-camp-2025-stage2-note.md
   - 新闻:
     - 2026 年:
       - 01 月 07 号: news/2026/qemu-camp-update-2026-01-07.md
