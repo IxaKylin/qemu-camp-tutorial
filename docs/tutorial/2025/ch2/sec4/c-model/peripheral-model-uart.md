@@ -1,6 +1,6 @@
 我们以 PL011 串口为例，讲解如何建模一个外设。
 
-L011 串口在 QEMU 中的建模完整展示了硬件外设模拟的核心流程：
+PL011 串口在 QEMU 中的建模完整展示了硬件外设模拟的核心流程：
 
 - 类型系统集成：通过 QOM 实现设备类的继承体系
 - 状态精确建模：寄存器、FIFO、中断状态的全周期管理
@@ -51,20 +51,20 @@ type_init(pl011_register_types);
 ```c
 typedef struct PL011State {
     SysBusDevice parent_obj;
-    
+
     /* 寄存器状态 */
     uint32_t lcr;       // 线路控制寄存器
     uint32_t imsc;      // 中断屏蔽寄存器
     uint32_t flags;     // 状态标志位
-    
+
     /* FIFO 缓冲区 */
     uint8_t read_fifo[PL011_FIFO_DEPTH];
     uint32_t read_pos;
     uint32_t read_count;
-    
+
     /* 中断系统 */
     qemu_irq irq;       // 中断信号线
-    
+
     /* 字符设备后端 */
     CharBackend chr;    // 连接宿主终端或文件
 } PL011State;
@@ -81,11 +81,11 @@ typedef struct PL011State {
 ```c
 static void pl011_class_init(ObjectClass *klass, void *data) {
     DeviceClass *dc = DEVICE_CLASS(klass);
-    
+
     dc->realize = pl011_realize;
     dc->reset = pl011_reset;
     dc->vmsd = &vmstate_pl011;
-    
+
     device_class_set_props(dc, pl011_properties);
 }
 
@@ -109,14 +109,14 @@ static Property pl011_properties[] = {
 static void pl011_realize(DeviceState *dev, Error **errp) {
     PL011State *s = PL011(dev);
     SysBusDevice *sbd = SYS_BUS_DEVICE(dev);
-    
+
     /* 1. 初始化内存区域 */
     memory_region_init_io(&s->iomem, OBJECT(s), &pl011_ops, s, "pl011", 0x1000);
     sysbus_init_mmio(sbd, &s->iomem);
-    
+
     /* 2. 初始化中断 */
     sysbus_init_irq(sbd, &s->irq);
-    
+
     /* 3. 连接字符设备 */
     qemu_chr_fe_set_handlers(&s->chr, pl011_can_receive, pl011_receive,
                              NULL, NULL, s, NULL, true);
@@ -137,7 +137,7 @@ static void pl011_realize(DeviceState *dev, Error **errp) {
 /* MMIO 写操作 */
 static void pl011_write(void *opaque, hwaddr offset, uint64_t value, unsigned size) {
     PL011State *s = opaque;
-    
+
     switch (offset) {
     case PL011_DR:  // 数据寄存器
         if (s->lcr & LCR_FEN) {
@@ -173,17 +173,17 @@ static void pl011_receive(void *opaque, const uint8_t *buf, int size) {
 ```c
 static void pl011_update(PL011State *s) {
     uint32_t int_level = 0;
-    
+
     /* 检查接收中断 */
     if ((s->imsc & INT_RX) && (s->read_count > 0)) {
         int_level |= INT_RX;
     }
-    
+
     /* 检查发送中断 */
     if ((s->imsc & INT_TX) && (s->xmit_count < PL011_FIFO_DEPTH)) {
         int_level |= INT_TX;
     }
-    
+
     /* 更新中断线 */
     qemu_set_irq(s->irq, int_level ? 1 : 0);
 }
@@ -215,7 +215,7 @@ typedef struct PL011State {
     MemoryRegion iomem;
     CharBackend chr;
     qemu_irq irq;
-    
+
     /* 寄存器状态 */
     uint32_t readbuff;
     uint32_t flags;
@@ -223,7 +223,7 @@ typedef struct PL011State {
     uint32_t cr;
     uint32_t imsc;
     uint32_t int_level;
-    
+
     /* FIFO 状态 */
     uint8_t read_fifo[PL011_FIFO_DEPTH];
     uint32_t read_pos;
@@ -244,7 +244,7 @@ static const MemoryRegionOps pl011_ops = {
 static uint64_t pl011_read(void *opaque, hwaddr offset, unsigned size) {
     PL011State *s = opaque;
     uint32_t ret = 0;
-    
+
     switch (offset) {
     case PL011_DR:
         if (s->read_count > 0) {
@@ -267,7 +267,7 @@ static uint64_t pl011_read(void *opaque, hwaddr offset, unsigned size) {
 /* 写操作实现 */
 static void pl011_write(void *opaque, hwaddr offset, uint64_t value, unsigned size) {
     PL011State *s = opaque;
-    
+
     switch (offset) {
     case PL011_DR:
         qemu_chr_fe_write(&s->chr, (uint8_t*)&value, 1);
@@ -285,12 +285,12 @@ static void pl011_write(void *opaque, hwaddr offset, uint64_t value, unsigned si
 /* 字符设备接收回调 */
 static void pl011_receive(void *opaque, const uint8_t *buf, int size) {
     PL011State *s = opaque;
-    
+
     if (s->read_count < PL011_FIFO_DEPTH) {
         int slot = (s->read_pos + s->read_count) % PL011_FIFO_DEPTH;
         s->read_fifo[slot] = *buf;
         s->read_count++;
-        
+
         if (s->read_count >= s->read_trigger) {
             s->int_level |= INT_RX;
             qemu_set_irq(s->irq, 1);
@@ -301,24 +301,24 @@ static void pl011_receive(void *opaque, const uint8_t *buf, int size) {
 /* 中断状态更新 */
 static void pl011_update(PL011State *s) {
     uint32_t int_level = 0;
-    
+
     // 接收中断 (RX)
     if ((s->imsc & INT_RX) && (s->read_count > 0)) {
         int_level |= INT_RX;
     }
-    
+
     // 发送中断 (TX)
     if ((s->imsc & INT_TX) && (s->xmit_count < PL011_FIFO_DEPTH)) {
         int_level |= INT_TX;
     }
-    
+
     qemu_set_irq(s->irq, int_level ? 1 : 0);
 }
 
 /* 设备重置 */
 static void pl011_reset(DeviceState *dev) {
     PL011State *s = PL011(dev);
-    
+
     s->lcr = 0;
     s->cr = 0x300;
     s->imsc = 0;
@@ -332,11 +332,11 @@ static void pl011_reset(DeviceState *dev) {
 static void pl011_realize(DeviceState *dev, Error **errp) {
     PL011State *s = PL011(dev);
     SysBusDevice *sbd = SYS_BUS_DEVICE(dev);
-    
+
     memory_region_init_io(&s->iomem, OBJECT(s), &pl011_ops, s, "pl011", 0x1000);
     sysbus_init_mmio(sbd, &s->iomem);
     sysbus_init_irq(sbd, &s->irq);
-    
+
     qemu_chr_fe_set_handlers(&s->chr, pl011_can_receive, pl011_receive,
                              NULL, NULL, s, NULL, true);
 }
@@ -362,15 +362,15 @@ type_init(pl011_register_types)
 
 static void virt_machine_init(MachineState *machine) {
     // ...
-    
+
     /* 创建 PL011 串口 */
     DeviceState *dev = qdev_new(TYPE_PL011);
     qdev_prop_set_chr(dev, "chardev", serial_hd(0));
-    
+
     sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), &error_fatal);
     sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, 0x10000000); // 映射到 0x10000000
     sysbus_connect_irq(SYS_BUS_DEVICE(dev), 0, plic_irq[UART0_IRQ]); // 连接中断
-    
+
     // 设备树添加节点
     qemu_fdt_add_subnode(fdt, "/soc/serial");
     qemu_fdt_setprop_string(fdt, "/soc/serial", "compatible", "arm,pl011");
@@ -396,7 +396,7 @@ cstatic void fifo_push(PL011State *s, uint32_t value) {
         uint32_t slot = (s->read_pos + s->read_count) % PL011_FIFO_DEPTH;
         s->read_fifo[slot] = value;
         s->read_count++;
-        
+
         // 触发中断条件
         if (s->read_count >= s->read_trigger) {
             s->int_level |= INT_RX;
