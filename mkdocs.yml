@@ -109,7 +109,7 @@ nav:
         - g. 主板建模流程: tutorial/2026/ch2/qemu-machine.md
         - h. 外设建模流程: tutorial/2026/ch2/qemu-hw.md
         - i. 时钟系统介绍: tutorial/2026/ch2/qemu-clock.md
-        - j. GPGPU 原理: tutorial/2026/ch2/gpgpu.md
+        - j. GPGPU 原理: tutorial/2026/ch2/qemu-gpgpu.md
         - k. PCIe 模拟方法: tutorial/2026/ch2/qemu-pcie.md
         - l. kernel 运行机制: tutorial/2026/ch2/kernel.md
         - m. Rust FFI 介绍: tutorial/2026/ch2/qemu-rust-ffi.md
