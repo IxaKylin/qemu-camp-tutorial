@@ -55,15 +55,16 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Switch to happy mode
-      accent: pink
+      primary: blue
+      accent: blue
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
         icon: material/weather-night
         name: Switch to light mode
-      primary: blue grey
-      accent: pink
+      primary: blue
+      accent: blue
   features:
     - content.code.copy
     - content.tooltips
