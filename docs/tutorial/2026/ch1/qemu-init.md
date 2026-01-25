@@ -439,3 +439,61 @@ static void riscv_cpu_reset_hold(Object *obj, ResetType type)
 !!! note "Task"
 
     尝试分析 virt Machine 的串口设备模型是如何初始化的，请结合 memory region 分析。
+
+## 主循环与 IO 线程
+
+完成初始化后，QEMU 会进入主循环，入口在 `system/runstate.c` 的 `qemu_main_loop()`，它不断调用 `main_loop_wait()` 处理事件，直到收到退出条件：
+
+```c
+/* system/runstate.c */
+int qemu_main_loop(void)
+{
+    int status = EXIT_SUCCESS;
+
+    while (!main_loop_should_exit(&status)) {
+        main_loop_wait(false);
+    }
+
+    return status;
+}
+```
+
+主循环里，`main_loop_wait()` 会根据定时器截止时间计算 poll 超时，等待宿主事件后再运行已到期的定时器：
+
+```c
+/* util/main-loop.c */
+void main_loop_wait(int nonblocking)
+{
+    int64_t timeout_ns;
+
+    timeout_ns = qemu_soonest_timeout(timeout_ns,
+                                      timerlistgroup_deadline_ns(
+                                          &main_loop_tlg));
+
+    ret = os_host_main_loop_wait(timeout_ns);
+    qemu_clock_run_all_timers();
+}
+```
+
+如果你把它理解成“QEMU 的事件泵”，就很容易把这段逻辑和设备的定时器、BH（bottom half）以及 monitor 事件联系起来。
+
+IO-Thread 则用于把 I/O 事件从主线程拆出去，它是一个 QOM 对象（`TYPE_IOTHREAD`），内部维护自己的 `AioContext` 与 `GMainContext`。核心运行循环在 `iothread_run()`：
+
+```c
+/* iothread.c */
+static void *iothread_run(void *opaque)
+{
+    IOThread *iothread = opaque;
+
+    while (iothread->running) {
+        aio_poll(iothread->ctx, true);
+        if (iothread->running && qatomic_read(&iothread->run_gcontext)) {
+            g_main_loop_run(iothread->main_loop);
+        }
+    }
+
+    return NULL;
+}
+```
+
+这意味着：主线程负责全局事件与定时器调度，而 I/O 密集的设备（例如 block、virtio）可以绑定到指定的 IO-Thread，在它自己的 `AioContext` 中处理事件。这样既能降低主线程负载，又能让 I/O 路径有更稳定的时序与并发控制。
