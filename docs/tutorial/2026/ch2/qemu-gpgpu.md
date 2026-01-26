@@ -21,7 +21,41 @@ GPGPU，用于深入学习 GPGPU 体系结构相关内容。
 
 ## 执行模型
 
-GPU 的常见执行模型是 SIMT（Single Instruction, Multiple Threads）。线程被组织为线程块（block），多个 block 组成网格（grid）。在硬件上，线程块会被分派到流式多处理器（SM），并被切分成固定大小的执行单元（warp）。
+本节涉及三类并行执行模型：SIMD、SIMT、MIMD，以下按 SIMD→SIMT→MIMD 的顺序说明。
+
+**SIMD：** SIMD（Single Instruction, Multiple Data）更接近向量架构：一条指令对多个数据元素锁步执行。它能在规则的数据并行负载上提供更直接的硬件并发，但通常要求数据布局对齐、连续以保持向量通道充分利用。相较 SIMT，SIMD 的向量宽度对编译器或程序员更“可见”。
+
+SIMD 伪代码示例（向量加法，向量宽度=4）：
+
+```
+v0 = load a[i : i+4]
+v1 = load b[i : i+4]
+v2 = v0 + v1
+store c[i : i+4] = v2
+```
+
+SIMD 示意图：
+
+```
+      vadd
+       |
+  +----+----+----+----+
+  | L0 | L1 | L2 | L3 |
+  +----+----+----+----+
+   a0   a1   a2   a3
+```
+
+**SIMT：** GPU 的常见执行模型是 SIMT（Single Instruction, Multiple Threads）。线程被组织为线程块（block），多个 block 组成网格（grid）。在硬件上，线程块会被分派到流式多处理器（SM），并被切分成固定大小的执行单元（warp）。
+
+从编程视角看，SIMT 把每个线程当作独立的标量程序（各自寄存器与程序计数器），硬件将线程分组成 warp，对整个 warp 发射同一条指令；当出现分支发散时，用掩码屏蔽不活跃线程并在后续点重新汇合。因此 SIMT 在语义上更接近标量编程，但执行上具备向量化的锁步特征。
+
+SIMT 伪代码示例（向量加法）：
+
+```
+kernel add(a, b, c):
+    tid = thread_id()
+    c[tid] = a[tid] + b[tid]
+```
 
 !!! tip "关键点"
 
@@ -48,14 +82,9 @@ Instr-> |      Warp(32)      |
      (serial replay under mask)
 ```
 
-对比来看，MIMD（Multiple Instruction, Multiple Data）允许不同核执行不同指令流，适合任务
-级并行与控制流差异较大的负载。即便运行相同程序，各核也能独立走不同分支。多核 CPU、分布式集群更
-接近 MIMD 风格，而 GPU 更偏向在数据并行场景下用 SIMT 放大吞吐。
+**MIMD：** MIMD（Multiple Instruction, Multiple Data）允许不同核执行不同指令流，适合任务级并行与控制流差异较大的负载。即便运行相同程序，各核也能独立走不同分支。多核 CPU、分布式集群更接近 MIMD 风格，而 GPU 更偏向在数据并行场景下用 SIMT 放大吞吐。
 
-在 MIMD 类体系里，Tenstorrent 的产品是值得关注的代表之一。以 Wormhole 系列 PCIe 加速卡为例，它
-采用由 Tensix Cores 组成的多核阵列，片上集成网络互连（NoC）、本地缓存与轻量级 RISC-V 控制核，强调
-“多核独立调度 + 高带宽互联”的吞吐模型。官方资料也提到其支持多卡网格化互联与开放软件栈，这种形态
-更接近“多核并行处理器”而非传统 SIMT GPU，有利于在不同工作负载上探索更灵活的控制流与数据流组织方式。
+在 MIMD 类体系里，Tenstorrent 的产品是值得关注的代表之一。以 Wormhole 系列 PCIe 加速卡为例，它采用由 Tensix Cores 组成的多核阵列，片上集成网络互连（NoC）、本地缓存与轻量级 RISC-V 控制核，强调“多核独立调度 + 高带宽互联”的吞吐模型。官方资料也提到其支持多卡网格化互联与开放软件栈，这种形态更接近“多核并行处理器”而非传统 SIMT GPU，有利于在不同工作负载上探索更灵活的控制流与数据流组织方式。
 
 MIMD 示意图：
 
@@ -166,7 +195,7 @@ Host -> Infeed -> [ Systolic Array ] -> Outfeed -> Host
 
 从趋势看，DSA（Domain-Specific Accelerator，领域专用加速器）正在成为 GPGPU 体系的重要补充：在通用 GPU 上集成或外挂专用单元，针对矩阵乘、稀疏计算、注意力等固定模式做定制化加速，以更高能效完成特定负载。
 
-## 开源项目
+## 开源 GPGPU
 
 开源 GPGPU 代表项目之一是 **Vortex**：基于 RISC-V 的 GPGPU 平台，支持 OpenCL，常见形态是
 运行在 FPGA 上的可扩展实现，适合教学与架构研究。
@@ -193,6 +222,12 @@ RISC-V ISA Ext (SIMT)
     |
 Vortex Cores -> Cache/Shared -> Mem
 ```
+
+## GPGPU-Sim
+
+GPGPU-Sim 是面向体系结构研究的开源 GPGPU 模拟器。它的基本工作方式是让 CUDA/OpenCL 程序在模拟器中执行，而不是运行在真实 GPU 硬件上，从而在 CPU 上复现实验所需的执行流程。
+
+使用时通常只需要准备应用运行所必需的最小环境，模拟器负责完成指令执行与统计输出。它常被用于教学或架构探索，例如对比不同调度策略、存储层次配置对性能的影响。
 
 ## QEMU 集成
 
