@@ -266,7 +266,7 @@ MemTxResult dma_memory_write(AddressSpace *as, dma_addr_t addr,
 
 ```
 Guest driver -> MMIO doorbell -> QEMU PCIe device
-              -> DMA read/write guest memory
+              -> DMA read/write Guest memory
               -> cmodel executes -> IRQ/MSI back
 ```
 
@@ -284,17 +284,16 @@ MemTxResult cxl_type3_write(PCIDevice *d, hwaddr host_addr, uint64_t data,
                             unsigned size, MemTxAttrs attrs);
 ```
 
-在这条路径上，你可以把 cmodel 作为“后端内存设备”，让 CXL 读写进入模拟器，从而评估带宽/延迟
-对 GPU 程序的影响。
+在这条路径上，你可以把 cmodel 作为“后端内存设备”，让 CXL 读写进入模拟器，从而评估带宽/延迟对 GPU 程序的影响。
 
 ### CXLMemSim
 
 CXLMemSim 是一个纯软件的 CXL.mem 模拟器，用于性能评估。它的仓库里包含 `qemu_integration`
 相关内容，提供了把 CXL 设备挂载到 QEMU 的脚本与示例。其思路是：
 
-- QEMU 提供 CXL 设备前端（Type 3 内存设备或相关扩展）。
+- QEMU 提供 CXL 设备前端（Type 2 内存设备或相关扩展）。
 - 模拟器在后端实现内存延迟/带宽模型。
-- 通过 QEMU 配置把 CXL 设备连接到 guest。
+- 通过 QEMU 配置把 CXL 设备连接到 Guest。
 
 该项目也展示了基于 CXL 的 GPU 访问示意（CXL Type 2 路径），体现了“CPU/GPU 协同 + 高速总线”
 的集成方向。我们在项目阶段会进行详细介绍。
