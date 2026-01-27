@@ -173,6 +173,7 @@ nav:
         - b. G233 Datasheet: tutorial/2025/ch4/g233-board-datasheet.md
       - 6. 贡献名录: tutorial/2025/ch5/contributors.md
   - 练习:
+    - 介绍页: exercise/index.md
     - QEMU 训练营 2026:
       - 训练营介绍: exercise/2026/index.md
       - 基础习题:
@@ -181,7 +182,8 @@ nav:
         - Rust 习题: exercise/2026/stage0/learning-rust.md
       - 专业实验:
         - 实验介绍: exercise/2026/stage1/index.md
-        - a. 模拟 G233 主板: exercise/2026/stage1/g233-board.md
+        - CPU 建模实验: exercise/2026/stage1/cpu-model.md
+        - GPU 建模实验: exercise/2026/stage1/gpu-model.md
   - 博客:
     - 介绍页: blogs/index.md
     - QEMU 训练营 2025 专业阶段实验解析: blogs/qemu-camp-2025-stage2-note.md
