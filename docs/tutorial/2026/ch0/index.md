@@ -10,7 +10,7 @@
 
     [训练营: learning C Camp][learning-c-camp-link]
 
-    [训练营: learning Rust Camp][learning-rust-camp-link]
+    [B 站: 最后一次入门 Rust][learning-rust-link]
 
 ### 体系结构相关
 
@@ -52,8 +52,7 @@
 
 
 [learning-c-camp-link]: https://opencamp.ai/C/camp/2025/register?code=cMJBju7dp5cTR
-[learning-rust-camp-link]: https://opencamp.ai/Rust/camp/S01
-[risc-sim-link]: https://www.bilibili.com/video/BV12Z4y1c74c/?vd_source=32a59d44033b6a74e27f55b17e7b394d&spm_id_from=333.788.videopod.episodes&p=5
+[learning-rust-link]: https://www.bilibili.com/video/BV1DVsUzNEro
 [qemu-unstream-link]: https://www.bilibili.com/video/BV11Cq6YxE8U
 [qemu-ima-link]: https://ima.qq.com/wiki/?shareId=70cb647d4024402dccc94b947c210de2e5c65c68559c166da7ee1a3d9a714e5e
 [qemu-devel-email-link]: https://oss.openatom.club/ch3/sec4/1-qemu-send-email/
