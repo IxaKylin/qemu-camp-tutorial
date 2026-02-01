@@ -30,7 +30,9 @@
 
     [Step2: QEMU 编译构建文档][qemu-build-link]
 
-    [Step3: 从零开始的 RISC-V 模拟器开发（QEMU 部分）][risc-sim-link]
+    [Step3: 从零开始的 RISC-V 模拟器开发（QEMU）][risc-sim-link]
+
+    [Step4: QEMU 训练营 2025 | 格维开源社区][qemu-camp-2025-link]
 
 ### QEMU 知识库
 
@@ -63,3 +65,5 @@
 [riscv-arch-book-link]: https://weread.qq.com/web/reader/93d32980813ab937ag01027b
 [riscv-ima-link]: https://ima.qq.com/wiki/?shareId=d61a408f97d541e435252e06621456a0d40691fa7a4059008933fb72873b605f
 [linux-ima-link]: https://ima.qq.com/wiki/?shareId=361fb581e4ddf2c0d7d4e3ba062b66df294e9b13976530804bd75a6c138d58a8
+[risc-sim-link]: https://www.bilibili.com/video/BV12Z4y1c74c
+[qemu-camp-2025-link]: https://www.bilibili.com/video/BV1J84VzsEJg/
