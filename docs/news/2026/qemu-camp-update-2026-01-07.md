@@ -2,7 +2,7 @@
 
 !!! note "主要贡献者"
 
-    - 通讯作者：[@zevorn](https://github.com/zevorn)
+    - 通讯：[@zevorn](https://github.com/zevorn)
 
 我们很欣喜地通知大家，QEMU 训练营 2026 已全面启动筹备工作。我们率先上线 QEMU Camp Tutorial，系统整理往期训练营的线上讲义；同时，训练营平台将新增博客与新闻专栏，用于同步项目进展、技术干货与活动动态。
 
