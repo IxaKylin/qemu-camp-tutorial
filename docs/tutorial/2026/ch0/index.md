@@ -24,6 +24,8 @@
 
 !!! note "基础知识"
 
+    [一键启动 QEMU 开发环境][qemu-cnb-link]
+
     [搭建 QEMU C 开发环境][qemu-c-env-link]
 
     [搭建 QEMU Rust 开发环境（可选）][qemu-rust-env-link]
@@ -53,6 +55,7 @@
     [开源社区实践: 参与上游贡献与补丁解读][qemu-unstream-link]
 
 
+[qemu-cnb-link]: ../../../blogs/qemu-cnb-dev.md
 [learning-c-camp-link]: https://opencamp.ai/C/camp/2025/register?code=cMJBju7dp5cTR
 [learning-rust-link]: https://www.bilibili.com/video/BV1DVsUzNEro
 [qemu-unstream-link]: https://www.bilibili.com/video/BV11Cq6YxE8U

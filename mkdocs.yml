@@ -188,6 +188,7 @@ nav:
         - GPU 硬件手册: exercise/2026/stage1/gpu/gpu-datasheet.md
   - 博客:
     - 介绍页: blogs/index.md
+    - 一键启动 QEMU 云原生开发: blogs/qemu-cnb-dev.md
     - QEMU 训练营 2025 专业阶段实验解析: blogs/qemu-camp-2025-stage2-note.md
     - 浅析虚拟机软件仿真中的解释技术: blogs/simulater-interp.md
   - 新闻:
