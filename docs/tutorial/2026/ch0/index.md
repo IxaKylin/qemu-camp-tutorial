@@ -60,7 +60,7 @@
 [learning-rust-link]: https://www.bilibili.com/video/BV1DVsUzNEro
 [qemu-unstream-link]: https://www.bilibili.com/video/BV11Cq6YxE8U
 [qemu-ima-link]: https://ima.qq.com/wiki/?shareId=70cb647d4024402dccc94b947c210de2e5c65c68559c166da7ee1a3d9a714e5e
-[qemu-devel-email-link]: https://oss.openatom.club/ch3/sec4/1-qemu-send-email/
+[qemu-devel-email-link]: ../../../blogs/qemu-devel-email.md
 [qemu-build-link]: https://qemu.readthedocs.io/en/v10.0.3/devel/build-system.html
 [qemu-c-env-link]: https://qemu.readthedocs.io/en/v10.0.3/devel/build-environment.html
 [qemu-rust-env-link]: https://hust-open-atom-club.github.io/rust-for-qemu-insides/articles/ch0/02-compile-and-debug/
