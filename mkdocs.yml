@@ -178,6 +178,10 @@ nav:
       - 训练营介绍: exercise/2026/index.md
       - 基础阶段 C 实验: exercise/2026/stage0/learning-c.md
       - 基础阶段 Rust 实验: exercise/2026/stage0/learning-rust.md
+      - 专业阶段 CPU 实验:
+        - 实验介绍: exercise/2026/stage1/cpu/index.md
+        - CPU 实验手册: exercise/2026/stage1/cpu/cpu-exper-manual.md
+        - CPU 硬件手册: exercise/2026/stage1/cpu/cpu-datasheet.md
       - 专业阶段 SOC 实验:
         - 实验介绍: exercise/2026/stage1/soc/index.md
         - SOC 实验手册: exercise/2026/stage1/soc/g233-exper-manual.md
@@ -186,6 +190,10 @@ nav:
         - 实验介绍: exercise/2026/stage1/gpu/index.md
         - GPU 实验手册: exercise/2026/stage1/gpu/gpu-exper-manual.md
         - GPU 硬件手册: exercise/2026/stage1/gpu/gpu-datasheet.md
+      - 专业阶段 Rust 实验:
+        - 实验介绍: exercise/2026/stage1/rust/index.md
+        - Rust 实验手册: exercise/2026/stage1/rust/rust-exper-manual.md
+        - Rust 编程指南: exercise/2026/stage1/rust/rust-lang-manual.md
   - 博客:
     - 介绍页: blogs/index.md
     - 如何参与 QEMU 邮件列表讨论: blogs/qemu-devel-email.md
